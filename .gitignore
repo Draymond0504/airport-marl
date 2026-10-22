@@ -1,0 +1,19 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.db
+.streamlit/
+
+# Local tooling and generated artefacts
+_shots/
+.claude/settings.local.json
+*.log
+.DS_Store
+
+# Experiment outputs and locally downloaded training checkpoints.
+# Curated reproducibility checkpoints live in models/ and remain tracked.
+results/
+checkpoints/
+wandb/
+runs/

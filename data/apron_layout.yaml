@@ -1,0 +1,68 @@
+# 模拟机坪拓扑（占位数据，非真实机场平面图）
+# 坐标单位：米，任意本地坐标系原点
+nodes:
+  - id: STAND_A1
+    label: "机位 A1"
+    type: stand
+    x: 0
+    y: 0
+  - id: STAND_A2
+    label: "机位 A2"
+    type: stand
+    x: 120
+    y: 0
+  - id: CARGO_1
+    label: "货运区 1"
+    type: cargo
+    x: 60
+    y: 150
+  - id: MAINT_1
+    label: "维修区 1"
+    type: maintenance
+    x: -100
+    y: 100
+  - id: SUPPLY_1
+    label: "补给区 1"
+    type: supply
+    x: 200
+    y: 100
+  - id: STANDBY_1
+    label: "待命区 1"
+    type: standby
+    x: 50
+    y: -120
+
+# 边：id1-id2，distance_m 为直线距离近似，base_travel_s 为无阻塞基准通行时间（秒）
+edges:
+  - from: STAND_A1
+    to: STAND_A2
+    distance_m: 120
+    base_travel_s: 60
+  - from: STAND_A1
+    to: CARGO_1
+    distance_m: 165
+    base_travel_s: 90
+  - from: STAND_A2
+    to: CARGO_1
+    distance_m: 150
+    base_travel_s: 80
+  - from: STAND_A1
+    to: MAINT_1
+    distance_m: 141
+    base_travel_s: 75
+  - from: STAND_A2
+    to: SUPPLY_1
+    distance_m: 122
+    base_travel_s: 65
+  - from: CARGO_1
+    to: SUPPLY_1
+    distance_m: 161
+    base_travel_s: 85
+  - from: STAND_A1
+    to: STANDBY_1
+    distance_m: 130
+    base_travel_s: 70
+  - from: STAND_A2
+    to: STANDBY_1
+    distance_m: 143
+    base_travel_s: 78
