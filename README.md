@@ -1,47 +1,33 @@
-# ApronOps
+# Airport MARL
 
-机场机坪自主作业协同与异常处置平台（仿真 / 数字孪生 MVP）。
+机场航空器滑行协调的算法与实验研究工程：A* 路径先验、MAPPO、
+物理滑行仿真、滚动执行器及实验图表。当前 main 是 2026 年 7 月迁移版
+（Layout F），不等同于桌面的 2026-10-10 Layout H 论文交付包。
 
-**边界声明**：本项目是面向封闭机坪场景的仿真与运营协同平台，**不**声称可直接部署到真实机场机坪。真实机坪涉及适航、机场运行规程、通信与安全认证，个人项目不越过这些边界；所有阈值、时长、坐标均为模拟示意值。
+## 安装与运行
 
-## 快速开始
-
-### 本地运行
+使用 Python 3.11 或 3.12。GPU 服务器根据 CUDA 版本安装匹配的 PyTorch。
 
 ```bash
+python3.11 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
-pytest                                   # 单元测试
-uvicorn apronops.api.main:app --reload   # 启动 API（含后台模拟循环），默认 :8000
-streamlit run apronops/dashboard/app.py  # 另开终端启动看板，默认 :8501
+python train_improved.py --config configs/fine_tune_8agents.yaml --save-dir checkpoints/new_run --seed 42
 ```
 
-### Docker Compose
+滚动评估示例（旧版 Layout F 协议）：
 
 ```bash
-docker compose up --build
+python run_layered_paper_exp_final.py --config configs/fine_tune_8agents.yaml --model models/guided_best_eval.pt --excel data.xlsx --scenario baseline --result-dir results/new_run/baseline --time-scale 3.0 --schedule-compression 0.10 --max-steps 50000 --active-limit 8 --seed 42
 ```
 
-- API: http://localhost:8000/docs
-- 看板: http://localhost:8501
+详细方法、限制与实验入口见 `MIGRATION_README_CN.md`。
+训练输出放在 `checkpoints/`，测试输出放在 `results/`，均默认忽略。
+`models/` 保留精选权重用于复现。
 
-## 目录结构
+## 平台拆分
 
-见项目根目录下的模块划分：`apronops/models.py`（数据模型）、`state_machine.py`（状态机）、`scheduler.py`（调度）、`anomaly.py`（异常检测）、`simulator.py`（模拟循环）、`storage.py`（SQLite 持久化）、`metrics.py`（KPI）、`api/`（FastAPI）、`dashboard/`（Streamlit）。
-
-## 数据说明
-
-当前所有数据均为**模拟数据**，位于 `data/*.yaml`：
-
-| 文件 | 内容 | 对应真实数据来源（生产环境，本项目不接入） |
-|---|---|---|
-| `apron_layout.yaml` | 机坪作业点坐标与连接边 | 机场 AIP/平面图、GIS 数据 |
-| `vehicles_seed.yaml` | 车辆类型、初始位置、速度、电量 | 车辆厂商规格书 |
-| `tasks_seed.yaml` | 模拟任务（类型、起终点、优先级、截止时间） | 航班时刻表 / FIDS / 地面服务工单系统 |
-
-保障作业标准时长（`simulator.py` 中 `SERVICE_DURATION_S`）、异常检测阈值（`anomaly.py`）、安全余量等同样为示意常数，如需替换为真实运营数据，需机场运行方审批并对接相应系统，超出本项目范围。
-
-## 外部依赖
-
-无需安装任何外部仿真软件（不需要 ROS2/Gazebo/SUMO/AnyLogic）。全部逻辑为纯 Python 自实现的离散时间步模拟循环，`pip install -r requirements.txt` 即可运行整个项目。
-
-后续如强化"具身智能"叙事，可选接入 ROS2 + Nav2 + Gazebo（需 Ubuntu/WSL2 环境）；如需更真实的路网/交通仿真，可选接入 SUMO（`pip install eclipse-sumo`）。两者均不在当前骨架范围内。
+ApronOps 机场机坪自主作业协同与异常处置平台的工作树已拆至独立项目
+`apronops-platform`，用于 Streamlit 看板、FastAPI 后端、车辆仿真、
+测试与 Docker 配置的维护。算法仓库不再包含这些业务模块。
+拆分前内容可通过初始提交 `f70a553` 追溯。平台与 MAPPO 尚未集成。
