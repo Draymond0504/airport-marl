@@ -28,6 +28,6 @@ python run_layered_paper_exp_final.py --config configs/fine_tune_8agents.yaml --
 ## 平台拆分
 
 ApronOps 机场机坪自主作业协同与异常处置平台的工作树已拆至独立项目
-`apronops-platform`，用于 Streamlit 看板、FastAPI 后端、车辆仿真、
+[arponviz](https://github.com/Draymond0504/arponviz)，用于 Streamlit 看板、FastAPI 后端、车辆仿真、
 测试与 Docker 配置的维护。算法仓库不再包含这些业务模块。
 拆分前内容可通过初始提交 `f70a553` 追溯。平台与 MAPPO 尚未集成。
